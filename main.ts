@@ -43,7 +43,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 let Dino: Sprite = null
-tiles.setTilemap(tilemap`level1`)
+tiles.setCurrentTilemap(tileUtil.createSmallMap(tilemap`level2`))
 Dino = sprites.create(assets.image`Dino-down`, SpriteKind.Player)
 controller.moveSprite(Dino, 50, 50)
 scene.cameraFollowSprite(Dino)
@@ -96,6 +96,8 @@ assets.animation`tyrant-walk-front`,
 200,
 characterAnimations.rule(Predicate.FacingDown, Predicate.Moving)
 )
+Tyrant.setBounceOnWall(true)
+Tyrant.setVelocity(50, 0)
 game.onUpdate(function () {
     if (characterAnimations.matchesRule(Dino, characterAnimations.rule(Predicate.NotMoving, Predicate.FacingRight)) && !(sprites.readDataBoolean(Dino, "isAttacking"))) {
         Dino.setImage(assets.image`Dino-down-side`)
@@ -107,6 +109,40 @@ game.onUpdate(function () {
         Dino.setImage(assets.image`Dino-down`)
     }
 })
-game.onUpdateInterval(1000, function () {
-    Tyrant.setVelocity(randint(-70, 70), randint(-50, 50))
+game.onUpdateInterval(10000, function () {
+    Tyrant.setVelocity(0, 0)
+    if (characterAnimations.matchesRule(Tyrant, characterAnimations.rule(Predicate.FacingLeft))) {
+        animation.runImageAnimation(
+        Tyrant,
+        assets.animation`tyrant-left-uivando`,
+        200,
+        false
+        )
+        music.play(music.melodyPlayable(music.bigCrash), music.PlaybackMode.InBackground)
+    } else if (characterAnimations.matchesRule(Tyrant, characterAnimations.rule(Predicate.FacingRight))) {
+        animation.runImageAnimation(
+        Tyrant,
+        assets.animation`tyrant-right-uivando`,
+        200,
+        false
+        )
+        music.play(music.melodyPlayable(music.bigCrash), music.PlaybackMode.InBackground)
+    } else if (characterAnimations.matchesRule(Tyrant, characterAnimations.rule(Predicate.FacingDown))) {
+        animation.runImageAnimation(
+        Tyrant,
+        assets.animation`tyrant-front-uivando`,
+        200,
+        false
+        )
+        music.play(music.melodyPlayable(music.bigCrash), music.PlaybackMode.InBackground)
+    }
+    characterAnimations.setCharacterAnimationsEnabled(Tyrant, false)
+    timer.after(2000, function () {
+        characterAnimations.setCharacterAnimationsEnabled(Tyrant, true)
+        if (characterAnimations.matchesRule(Tyrant, characterAnimations.rule(Predicate.FacingLeft))) {
+            Tyrant.setVelocity(-50, 0)
+        } else if (characterAnimations.matchesRule(Tyrant, characterAnimations.rule(Predicate.FacingRight))) {
+            Tyrant.setVelocity(50, 0)
+        }
+    })
 })
