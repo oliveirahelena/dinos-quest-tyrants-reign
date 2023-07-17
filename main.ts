@@ -108,7 +108,7 @@ characterAnimations.rule(Predicate.FacingLeft, Predicate.Moving)
 )
 characterAnimations.loopFrames(
 Tyrant,
-assets.animation`walk-dino-back`,
+assets.animation`tyrant-walk-back`,
 200,
 characterAnimations.rule(Predicate.FacingUp, Predicate.Moving)
 )
@@ -166,6 +166,13 @@ game.onUpdate(function () {
                 200,
                 false
                 )
+            } else if (characterAnimations.matchesRule(Tyrant, characterAnimations.rule(Predicate.FacingUp))) {
+                animation.runImageAnimation(
+                Tyrant,
+                assets.animation`tyrant-luta-back-right`,
+                200,
+                false
+                )
             }
             characterAnimations.setCharacterAnimationsEnabled(Tyrant, false)
             timer.after(800, function () {
@@ -203,6 +210,14 @@ game.onUpdateInterval(10000, function () {
             animation.runImageAnimation(
             Tyrant,
             assets.animation`tyrant-front-uivando`,
+            200,
+            false
+            )
+            music.play(music.melodyPlayable(music.bigCrash), music.PlaybackMode.InBackground)
+        } else if (characterAnimations.matchesRule(Tyrant, characterAnimations.rule(Predicate.FacingUp))) {
+            animation.runImageAnimation(
+            Tyrant,
+            assets.animation`tyrant-back-uivando`,
             200,
             false
             )
